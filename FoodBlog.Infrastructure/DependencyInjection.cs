@@ -1,12 +1,17 @@
+using FoodBlog.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace FoodBlog.Infrastructure;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddInfrastructureServices(this IServiceCollection services)
+    public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, string connectionString)
     {
-        // Sẽ đăng ký DbContext, Repositories ở các bước sau
+        // Đăng ký DbContext với SQL Server
+        services.AddDbContext<AppDbContext>(options =>
+            options.UseSqlServer(connectionString));
+
         return services;
     }
 }
