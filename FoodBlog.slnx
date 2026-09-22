@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="FoodBlog.API/FoodBlog.API.csproj" />
+  <Project Path="FoodBlog.Application/FoodBlog.Application.csproj" />
+  <Project Path="FoodBlog.Domain/FoodBlog.Domain.csproj" />
+  <Project Path="FoodBlog.Infrastructure/FoodBlog.Infrastructure.csproj" />
+</Solution>
