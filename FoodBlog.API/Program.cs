@@ -1,3 +1,4 @@
+using FoodBlog.API.Endpoints; // <-- Thêm dòng này
 using FoodBlog.Application;
 using FoodBlog.Infrastructure;
 using FoodBlog.Infrastructure.Data;
@@ -57,6 +58,9 @@ try
     }
 
     app.UseHttpsRedirection();
+
+    // Đăng ký các endpoints
+    app.MapDataVerificationEndpoints(); // <-- Thêm dòng này
     app.MapControllers();
 
     app.Run();
