@@ -427,3 +427,11 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+src/FoodBlog.API/appsettings.Development.json
+src/FoodBlog.API/appsettings.Production.json
+**/secrets.json
+*.pfx
+*.p12
+.env
+**/logs/
