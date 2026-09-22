@@ -1,9 +1,10 @@
 using FoodBlog.Application;
 using FoodBlog.Infrastructure;
 using FoodBlog.Infrastructure.Data;
+using FoodBlog.Infrastructure.Data.Seeders;
+using Microsoft.EntityFrameworkCore; // <-- This fixes the 'MigrateAsync' error
 using Serilog;
 
-// Cấu hình Serilog
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
     .WriteTo.File("logs/log-.txt", rollingInterval: RollingInterval.Day)
@@ -14,11 +15,8 @@ try
     Log.Information("Starting FoodBlog API");
 
     var builder = WebApplication.CreateBuilder(args);
-
-    // Thêm Serilog vào logging pipeline
     builder.Host.UseSerilog();
 
-    // Cấu hình DI theo Clean Architecture
     builder.Services.AddApplicationServices();
 
     var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -30,10 +28,32 @@ try
 
     var app = builder.Build();
 
+    // DEBUG: This will tell us exactly what environment the app thinks it's in
+    Log.Information("CURRENT ENVIRONMENT: {Environment}", app.Environment.EnvironmentName);
+
     if (app.Environment.IsDevelopment())
     {
         app.UseSwagger();
         app.UseSwaggerUI();
+
+        Log.Information("🚀 STARTING MIGRATION AND SEEDING...");
+
+        using (var scope = app.Services.CreateScope())
+        {
+            var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+
+            // This works now because of "using Microsoft.EntityFrameworkCore;" at the top
+            await dbContext.Database.MigrateAsync();
+
+            // Gọi hàm seed dữ liệu
+            await DatabaseSeeder.SeedAsync(dbContext);
+
+            Log.Information("✅ SEEDING FINISHED SUCCESSFULLY.");
+        }
+    }
+    else
+    {
+        Log.Warning("⚠️ SKIPPING SEEDING: Environment is NOT Development. It is {Environment}", app.Environment.EnvironmentName);
     }
 
     app.UseHttpsRedirection();
